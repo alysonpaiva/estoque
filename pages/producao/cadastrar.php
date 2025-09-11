@@ -21,9 +21,9 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     }
 }
 
-// Buscar lotes com estoque para o select
+// Carregar lotes disponíveis
 try {
-    $lotes = Lote::listarComEstoque();
+    $lotes = Lote::listarDisponiveis();
 } catch (Exception $e) {
     $erro = 'Erro ao carregar lotes: ' . $e->getMessage();
     $lotes = [];
