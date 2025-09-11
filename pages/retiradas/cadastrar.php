@@ -21,9 +21,9 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     }
 }
 
-// Buscar produções com estoque para o select
+// Carregar produções disponíveis
 try {
-    $producoes = Producao::listarComEstoque();
+    $producoes = Producao::listarDisponiveis();
 } catch (Exception $e) {
     $erro = 'Erro ao carregar produções: ' . $e->getMessage();
     $producoes = [];
