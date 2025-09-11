@@ -19,7 +19,7 @@ define('TIMEZONE', 'America/Sao_Paulo');
 define('DATE_FORMAT', 'd/m/Y');
 define('DATETIME_FORMAT', 'd/m/Y H:i:s');
 define('DECIMAL_PLACES', 3);
-define('CURRENCY_SYMBOL', 'R&#36;');
+define('CURRENCY_SYMBOL', 'R$');
 
 // Configurações de Estoque
 define('ESTOQUE_MINIMO_ALERTA', 10);
@@ -46,7 +46,8 @@ function formatMoney($value) {
     if ($value === null || $value === '' || !is_numeric($value)) {
         $value = 0;
     }
-    return CURRENCY_SYMBOL . ' ' . number_format((float)$value, 2, ',', '.');
+    // Usar chr(36) para o símbolo $ - mais compatível
+    return 'R' . chr(36) . ' ' . number_format((float)$value, 2, ',', '.');
 }
 
 // Função para formatar datas
