@@ -411,7 +411,7 @@ class Producao {
     }
     
     /**
-     * Exclui a produção
+     * Exclui a produção permanentemente
      */
     public function excluir() {
         try {
@@ -430,6 +430,48 @@ class Producao {
         } catch (Exception $e) {
             debugLog("Erro ao excluir produção: " . $e->getMessage(), $this);
             return false;
+        }
+    }
+    
+    /**
+     * Retorna o estoque disponível da produção (alias para calcularQuantidadeDisponivel)
+     */
+    public function getEstoqueDisponivel() {
+        return $this->calcularQuantidadeDisponivel();
+    }
+    
+    /**
+     * Retorna o lote associado à produção
+     */
+    public function getLote() {
+        try {
+            if (!$this->loteId) {
+                return null;
+            }
+            
+            return Lote::buscarPorId($this->loteId);
+        } catch (Exception $e) {
+            debugLog("Erro ao buscar lote da produção: " . $e->getMessage(), $this);
+            return null;
+        }
+    }
+    
+    /**
+     * Retorna o total de retiradas da produção
+     */
+    public function getTotalRetiradas() {
+        try {
+            if (!$this->id) {
+                return 0;
+            }
+            
+            $sql = "SELECT COUNT(*) as total FROM retiradas WHERE producao_id = :producao_id";
+            $result = $this->db->fetchOne($sql, [':producao_id' => $this->id]);
+            
+            return (int)$result['total'];
+        } catch (Exception $e) {
+            debugLog("Erro ao contar retiradas da produção: " . $e->getMessage(), $this);
+            return 0;
         }
     }
 }

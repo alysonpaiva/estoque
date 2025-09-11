@@ -376,7 +376,7 @@ class Lote {
     }
     
     /**
-     * Exclui o lote
+     * Exclui o lote permanentemente
      */
     public function excluir() {
         try {
@@ -395,6 +395,80 @@ class Lote {
         } catch (Exception $e) {
             debugLog("Erro ao excluir lote: " . $e->getMessage(), $this);
             return false;
+        }
+    }
+    
+    /**
+     * Retorna a quantidade restante do lote (alias para calcularQuantidadeRestante)
+     */
+    public function getQuantidadeRestante() {
+        return $this->calcularQuantidadeRestante();
+    }
+    
+    /**
+     * Retorna o produto associado ao lote
+     */
+    public function getProduto() {
+        try {
+            if (!$this->produtoId) {
+                return null;
+            }
+            
+            return Produto::buscarPorId($this->produtoId);
+        } catch (Exception $e) {
+            debugLog("Erro ao buscar produto do lote: " . $e->getMessage(), $this);
+            return null;
+        }
+    }
+    
+    /**
+     * Retorna o total de produções do lote
+     */
+    public function getTotalProducoes() {
+        try {
+            if (!$this->id) {
+                return 0;
+            }
+            
+            $sql = "SELECT COUNT(*) as total FROM producao WHERE lote_id = :lote_id";
+            $result = $this->db->fetchOne($sql, [':lote_id' => $this->id]);
+            
+            return (int)$result['total'];
+        } catch (Exception $e) {
+            debugLog("Erro ao contar produções do lote: " . $e->getMessage(), $this);
+            return 0;
+        }
+    }
+    
+    /**
+     * Retorna informações detalhadas do lote
+     */
+    public function getInformacoesDetalhadas() {
+        try {
+            if (!$this->id) {
+                return null;
+            }
+            
+            $sql = "SELECT 
+                        l.*,
+                        p.nome as produto_nome,
+                        p.unidade_medida,
+                        COUNT(pr.id) as total_producoes,
+                        COALESCE(SUM(pr.quantidade_materia_prima_usada), 0) as total_usado,
+                        COALESCE(SUM(pr.quantidade_produzida), 0) as total_produzido,
+                        (l.quantidade_comprada - COALESCE(SUM(pr.quantidade_materia_prima_usada), 0)) as quantidade_restante
+                    FROM lotes l
+                    LEFT JOIN produtos p ON l.produto_id = p.id
+                    LEFT JOIN producao pr ON l.id = pr.lote_id
+                    WHERE l.id = :lote_id
+                    GROUP BY l.id";
+            
+            $result = $this->db->fetchOne($sql, [':lote_id' => $this->id]);
+            
+            return $result;
+        } catch (Exception $e) {
+            debugLog("Erro ao buscar informações detalhadas do lote: " . $e->getMessage(), $this);
+            return null;
         }
     }
 }

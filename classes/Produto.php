@@ -298,6 +298,136 @@ class Produto {
             return false;
         }
     }
+    
+    /**
+     * Verifica se o produto está ativo (alias para getAtivo)
+     */
+    public function isAtivo() {
+        return $this->ativo;
+    }
+    
+    /**
+     * Verifica se o produto pode ser excluído (alias para podeExcluir)
+     */
+    public function podeSerExcluido() {
+        return $this->podeExcluir();
+    }
+    
+    /**
+     * Retorna o total de lotes do produto
+     */
+    public function getTotalLotes() {
+        try {
+            if (!$this->id) {
+                return 0;
+            }
+            
+            $sql = "SELECT COUNT(*) as total FROM lotes WHERE produto_id = :produto_id";
+            $result = $this->db->fetchOne($sql, [':produto_id' => $this->id]);
+            
+            return (int)$result['total'];
+        } catch (Exception $e) {
+            debugLog("Erro ao contar lotes do produto: " . $e->getMessage(), $this);
+            return 0;
+        }
+    }
+    
+    /**
+     * Retorna o estoque total do produto (matéria-prima restante)
+     */
+    public function getEstoqueTotal() {
+        try {
+            if (!$this->id) {
+                return 0;
+            }
+            
+            $sql = "SELECT COALESCE(SUM(l.quantidade_comprada - COALESCE(p.total_usado, 0)), 0) as estoque_total
+                    FROM lotes l
+                    LEFT JOIN (
+                        SELECT lote_id, SUM(quantidade_materia_prima_usada) as total_usado
+                        FROM producao
+                        GROUP BY lote_id
+                    ) p ON l.id = p.lote_id
+                    WHERE l.produto_id = :produto_id";
+            
+            $result = $this->db->fetchOne($sql, [':produto_id' => $this->id]);
+            
+            return (float)$result['estoque_total'];
+        } catch (Exception $e) {
+            debugLog("Erro ao calcular estoque total do produto: " . $e->getMessage(), $this);
+            return 0;
+        }
+    }
+    
+    /**
+     * Retorna o estoque de porções produzidas disponíveis
+     */
+    public function getEstoquePorcoes() {
+        try {
+            if (!$this->id) {
+                return 0;
+            }
+            
+            $sql = "SELECT COALESCE(SUM(pr.quantidade_produzida - COALESCE(r.total_retirado, 0)), 0) as estoque_porcoes
+                    FROM lotes l
+                    LEFT JOIN producao pr ON l.id = pr.lote_id
+                    LEFT JOIN (
+                        SELECT producao_id, SUM(quantidade_retirada) as total_retirado
+                        FROM retiradas
+                        GROUP BY producao_id
+                    ) r ON pr.id = r.producao_id
+                    WHERE l.produto_id = :produto_id";
+            
+            $result = $this->db->fetchOne($sql, [':produto_id' => $this->id]);
+            
+            return (int)$result['estoque_porcoes'];
+        } catch (Exception $e) {
+            debugLog("Erro ao calcular estoque de porções do produto: " . $e->getMessage(), $this);
+            return 0;
+        }
+    }
+    
+    /**
+     * Retorna informações completas do produto com estatísticas
+     */
+    public function getInformacoesCompletas() {
+        try {
+            if (!$this->id) {
+                return null;
+            }
+            
+            $sql = "SELECT 
+                        p.*,
+                        COUNT(DISTINCT l.id) as total_lotes,
+                        COALESCE(SUM(l.quantidade_comprada), 0) as total_comprado,
+                        COALESCE(SUM(l.preco_compra), 0) as valor_investido,
+                        COALESCE(SUM(l.quantidade_comprada - COALESCE(prod.total_usado, 0)), 0) as estoque_materia_prima,
+                        COALESCE(SUM(pr.quantidade_produzida), 0) as total_produzido,
+                        COALESCE(SUM(pr.quantidade_produzida - COALESCE(ret.total_retirado, 0)), 0) as estoque_porcoes
+                    FROM produtos p
+                    LEFT JOIN lotes l ON p.id = l.produto_id
+                    LEFT JOIN (
+                        SELECT lote_id, SUM(quantidade_materia_prima_usada) as total_usado
+                        FROM producao
+                        GROUP BY lote_id
+                    ) prod ON l.id = prod.lote_id
+                    LEFT JOIN producao pr ON l.id = pr.lote_id
+                    LEFT JOIN (
+                        SELECT producao_id, SUM(quantidade_retirada) as total_retirado
+                        FROM retiradas
+                        GROUP BY producao_id
+                    ) ret ON pr.id = ret.producao_id
+                    WHERE p.id = :produto_id
+                    GROUP BY p.id";
+            
+            $result = $this->db->fetchOne($sql, [':produto_id' => $this->id]);
+            
+            return $result;
+        } catch (Exception $e) {
+            debugLog("Erro ao buscar informações completas do produto: " . $e->getMessage(), $this);
+            return null;
+        }
+    }
 }
 ?>
 
