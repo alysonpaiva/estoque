@@ -19,7 +19,7 @@ define('TIMEZONE', 'America/Sao_Paulo');
 define('DATE_FORMAT', 'd/m/Y');
 define('DATETIME_FORMAT', 'd/m/Y H:i:s');
 define('DECIMAL_PLACES', 3);
-define('CURRENCY_SYMBOL', 'R$');
+define('CURRENCY_SYMBOL', 'R&#36;');
 
 // Configurações de Estoque
 define('ESTOQUE_MINIMO_ALERTA', 10);
