@@ -32,21 +32,18 @@ try {
 // Processar formulário
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $produtoId = (int) ($_POST['produto_id'] ?? 0);
+         $produtoId = (int)($_POST['produto_id'] ?? 0);
         $precoCompra = convertToDecimal($_POST['preco_compra'] ?? '0');
         $quantidadeComprada = convertToDecimal($_POST['quantidade_comprada'] ?? '0');
-        $pesoUnidade = !empty($_POST['peso_unidade']) ? convertToDecimal($_POST['peso_unidade']) : null;
         
         if ($editando && $lote) {
             // Atualizar lote existente
             $lote->setProdutoId($produtoId);
             $lote->setPrecoCompra($precoCompra);
             $lote->setQuantidadeComprada($quantidadeComprada);
-            $lote->setPesoUnidade($pesoUnidade);
         } else {
             // Criar novo lote
             $lote = new Lote($produtoId, $precoCompra, $quantidadeComprada);
-            $lote->setPesoUnidade($pesoUnidade);
         }
         
         // Validar dados
@@ -186,24 +183,6 @@ $pageTitle = $editando ? 'Editar Lote' : 'Cadastrar Lote';
                                                 Por favor, informe a quantidade comprada.
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="peso_unidade" class="form-label">
-                                        Peso por Unidade (opcional)
-                                    </label>
-                                    <div class="input-group">
-                                        <input type="text" 
-                                               class="form-control" 
-                                               id="peso_unidade" 
-                                               name="peso_unidade" 
-                                               value="<?php echo ($lote && $lote->getPesoUnidade()) ? convertFromDecimal($lote->getPesoUnidade()) : ''; ?>"
-                                               placeholder="0,000">
-                                        <span class="input-group-text">kg</span>
-                                    </div>
-                                    <div class="form-text">
-                                        Informe apenas se necessário para cálculos específicos
                                     </div>
                                 </div>
 
