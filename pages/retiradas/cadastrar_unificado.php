@@ -365,9 +365,9 @@ $pageTitle = ($editando ? 'Editar' : 'Nova') . ' Retirada - ' . APP_NAME;
                 producoes.forEach(producao => {
                     const option = document.createElement('option');
                     option.value = producao.id;
-                    option.textContent = `${producao.produto_nome} - Lote #${producao.lote_id} (${producao.estoque_disponivel} porções disponíveis)`;
+                    option.textContent = `${producao.produto_nome || 'Produto'} - Lote #${producao.lote_id || 'N/A'} (${producao.quantidade_disponivel || 0} porções disponíveis)`;
                     option.dataset.unidade = 'porções';
-                    option.dataset.max = producao.estoque_disponivel;
+                    option.dataset.max = producao.quantidade_disponivel || 0;
                     itemSelect.appendChild(option);
                 });
             } else if (tipoSelect.value === 'produto_pronto') {
@@ -375,9 +375,9 @@ $pageTitle = ($editando ? 'Editar' : 'Nova') . ' Retirada - ' . APP_NAME;
                 produtosProntos.forEach(produto => {
                     const option = document.createElement('option');
                     option.value = produto.id;
-                    option.textContent = `${produto.nome} (${produto.estoque_disponivel} ${produto.unidade_medida} disponíveis)`;
-                    option.dataset.unidade = produto.unidade_medida;
-                    option.dataset.max = produto.estoque_disponivel;
+                    option.textContent = `${produto.nome || 'Produto'} (${produto.estoque_disponivel || 0} ${produto.unidade_medida || 'un'} disponíveis)`;
+                    option.dataset.unidade = produto.unidade_medida || 'un';
+                    option.dataset.max = produto.estoque_disponivel || 0;
                     itemSelect.appendChild(option);
                 });
             }
@@ -393,7 +393,10 @@ $pageTitle = ($editando ? 'Editar' : 'Nova') . ' Retirada - ' . APP_NAME;
             
             if (selectedOption.dataset.max) {
                 quantidadeInput.max = selectedOption.dataset.max;
-                quantidadeInput.placeholder = `Máximo: ${selectedOption.dataset.max} ${selectedOption.dataset.unidade}`;
+                quantidadeInput.placeholder = `Máximo: ${selectedOption.dataset.max} ${selectedOption.dataset.unidade || 'un'}`;
+            } else {
+                quantidadeInput.removeAttribute('max');
+                quantidadeInput.placeholder = 'Quantidade';
             }
         });
         
