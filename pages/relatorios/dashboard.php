@@ -99,22 +99,79 @@ function safeFormatNumber($value, $decimals = 2) {
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../../pages/relatorios/dashboard.php">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-chart-bar"></i> Relatórios
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-box-seam"></i> Produtos
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="entradas.php">Relatório de Entradas</a></li>
-                            <li><a class="dropdown-item" href="producao.php">Relatório de Produção</a></li>
-                            <li><a class="dropdown-item" href="retiradas.php">Relatório de Retiradas</a></li>
+                            <li><a class="dropdown-item" href="../produtos/cadastrar.php">Cadastrar Produto</a></li>
+                            <li><a class="dropdown-item" href="../produtos/listar.php">Listar Produtos</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../../index.php">
-                            <i class="fas fa-home"></i> Início
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-archive"></i> Lotes
                         </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="../lotes/cadastrar.php">Novo Lote</a></li>
+                            <li><a class="dropdown-item" href="../lotes/listar.php">Listar Lotes</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-gear"></i> Produção
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="../producao/cadastrar.php">Nova Produção</a></li>
+                            <li><a class="dropdown-item" href="../producao/listar.php">Listar Produções</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-truck"></i> Retiradas
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="../retiradas/cadastrar.php">Nova Retirada</a></li>
+                            <li><a class="dropdown-item" href="../retiradas/listar.php">Listar Retiradas</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-bag-check"></i> Produtos Prontos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="../produtos_prontos/entrada.php">Nova Entrada</a></li>
+                            <li><a class="dropdown-item" href="../produtos_prontos/listar_entradas.php">Listar Entradas</a></li>
+                            <li><a class="dropdown-item" href="../produtos_prontos/retirada.php">Nova Retirada</a></li>
+                            <li><a class="dropdown-item" href="../produtos_prontos/listar_retiradas.php">Listar Retiradas</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-currency-dollar"></i> Vendas
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="../vendas/cadastrar.php">Nova Venda</a></li>
+                            <li><a class="dropdown-item" href="../vendas/listar.php">Listar Vendas</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-graph-up"></i> Relatórios
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="../relatorios/dashboard.php">Dashboard</a></li>
+                            <li><a class="dropdown-item" href="../relatorios/entradas.php">Entradas</a></li>
+                            <li><a class="dropdown-item" href="../relatorios/producao.php">Produção</a></li>
+                            <li><a class="dropdown-item" href="../relatorios/retiradas.php">Retiradas</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>

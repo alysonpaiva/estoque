@@ -100,6 +100,35 @@ $pageTitle = ($editando ? 'Editar' : 'Nova') . ' Venda Semanal - ' . APP_NAME;
                             <li><a class="dropdown-item" href="../produtos/listar.php">Listar Produtos</a></li>
                         </ul>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-archive"></i> Lotes
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="../lotes/cadastrar.php">Novo Lote</a></li>
+                            <li><a class="dropdown-item" href="../lotes/listar.php">Listar Lotes</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-gear"></i> Produção
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="../producao/cadastrar.php">Nova Produção</a></li>
+                            <li><a class="dropdown-item" href="../producao/listar.php">Listar Produções</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-bag-check"></i> Produtos Prontos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="../produtos_prontos/entrada.php">Nova Entrada</a></li>
+                            <li><a class="dropdown-item" href="../produtos_prontos/listar_entradas.php">Listar Entradas</a></li>
+                            <li><a class="dropdown-item" href="../produtos_prontos/retirada.php">Nova Retirada</a></li>
+                            <li><a class="dropdown-item" href="../produtos_prontos/listar_retiradas.php">Listar Retiradas</a></li>
+                        </ul>
+                    </li>
                     <li class="nav-item dropdown active">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="bi bi-currency-dollar"></i> Vendas
@@ -107,6 +136,17 @@ $pageTitle = ($editando ? 'Editar' : 'Nova') . ' Venda Semanal - ' . APP_NAME;
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item active" href="cadastrar.php">Nova Venda</a></li>
                             <li><a class="dropdown-item" href="listar.php">Listar Vendas</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-graph-up"></i> Relatórios
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="../relatorios/dashboard.php">Dashboard</a></li>
+                            <li><a class="dropdown-item" href="../relatorios/entradas.php">Entradas</a></li>
+                            <li><a class="dropdown-item" href="../relatorios/producao.php">Produção</a></li>
+                            <li><a class="dropdown-item" href="../relatorios/retiradas.php">Retiradas</a></li>
                         </ul>
                     </li>
                 </ul>
