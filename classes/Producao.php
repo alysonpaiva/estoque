@@ -10,6 +10,7 @@ class Producao {
     private $quantidadeProduzida;
     private $quantidadeMateriaPrimaUsada;
     private $custoTotalProducao;
+    private $custoItensExtras;
     private $custoPorPorcao;
     private $dataProducao;
     private $observacoes;
@@ -42,6 +43,7 @@ class Producao {
     public function getQuantidadeProduzida() { return $this->quantidadeProduzida; }
     public function getQuantidadeMateriaPrimaUsada() { return $this->quantidadeMateriaPrimaUsada; }
     public function getCustoTotalProducao() { return $this->custoTotalProducao; }
+    public function getCustoItensExtras() { return $this->custoItensExtras; }
     public function getCustoPorPorcao() { return $this->custoPorPorcao; }
     public function getDataProducao() { return $this->dataProducao; }
     public function getObservacoes() { return $this->observacoes; }
@@ -68,6 +70,10 @@ class Producao {
         }
     }
     public function setObservacoes($observacoes) { $this->observacoes = $observacoes; }
+    public function setCustoItensExtras($custoItensExtras) { 
+        $this->custoItensExtras = (float)$custoItensExtras;
+        $this->recalcularCustoPorPorcao();
+    }
     
     /**
      * Calcula os custos da produção
@@ -79,7 +85,7 @@ class Producao {
                 $lote = Lote::buscarPorId($this->loteId);
                 if ($lote) {
                     $this->custoTotalProducao = $this->quantidadeMateriaPrimaUsada * $lote->getCustoPorUnidade();
-                    $this->custoPorPorcao = $this->custoTotalProducao / $this->quantidadeProduzida;
+                    $this->recalcularCustoPorPorcao();
                 } else {
                     $this->custoTotalProducao = 0;
                     $this->custoPorPorcao = 0;
@@ -91,6 +97,18 @@ class Producao {
         } catch (Exception $e) {
             debugLog("Erro ao calcular custos da produção: " . $e->getMessage(), $this);
             $this->custoTotalProducao = 0;
+            $this->custoPorPorcao = 0;
+        }
+    }
+    
+    /**
+     * Recalcula o custo por porção incluindo itens extras
+     */
+    private function recalcularCustoPorPorcao() {
+        if ($this->quantidadeProduzida > 0) {
+            $custoTotal = $this->custoTotalProducao + ($this->custoItensExtras ?? 0);
+            $this->custoPorPorcao = $custoTotal / $this->quantidadeProduzida;
+        } else {
             $this->custoPorPorcao = 0;
         }
     }
@@ -156,6 +174,7 @@ class Producao {
                         quantidade_produzida = :quantidade_produzida,
                         quantidade_materia_prima_usada = :quantidade_materia_prima_usada,
                         custo_total_producao = :custo_total_producao,
+                        custo_itens_extras = :custo_itens_extras,
                         custo_por_porcao = :custo_por_porcao,
                         data_producao = :data_producao,
                         observacoes = :observacoes
@@ -167,20 +186,22 @@ class Producao {
                     ':quantidade_produzida' => $this->quantidadeProduzida,
                     ':quantidade_materia_prima_usada' => $this->quantidadeMateriaPrimaUsada,
                     ':custo_total_producao' => $this->custoTotalProducao,
+                    ':custo_itens_extras' => $this->custoItensExtras ?? 0,
                     ':custo_por_porcao' => $this->custoPorPorcao,
                     ':data_producao' => $this->dataProducao->format('Y-m-d H:i:s'),
                     ':observacoes' => $this->observacoes
                 ];
             } else {
                 // Inserir nova produção
-                $sql = "INSERT INTO producao (lote_id, quantidade_produzida, quantidade_materia_prima_usada, custo_total_producao, custo_por_porcao, data_producao, observacoes)
-                        VALUES (:lote_id, :quantidade_produzida, :quantidade_materia_prima_usada, :custo_total_producao, :custo_por_porcao, :data_producao, :observacoes)";
+                $sql = "INSERT INTO producao (lote_id, quantidade_produzida, quantidade_materia_prima_usada, custo_total_producao, custo_itens_extras, custo_por_porcao, data_producao, observacoes)
+                        VALUES (:lote_id, :quantidade_produzida, :quantidade_materia_prima_usada, :custo_total_producao, :custo_itens_extras, :custo_por_porcao, :data_producao, :observacoes)";
                 
                 $params = [
                     ':lote_id' => $this->loteId,
                     ':quantidade_produzida' => $this->quantidadeProduzida,
                     ':quantidade_materia_prima_usada' => $this->quantidadeMateriaPrimaUsada,
                     ':custo_total_producao' => $this->custoTotalProducao,
+                    ':custo_itens_extras' => $this->custoItensExtras ?? 0,
                     ':custo_por_porcao' => $this->custoPorPorcao,
                     ':data_producao' => $this->dataProducao->format('Y-m-d H:i:s'),
                     ':observacoes' => $this->observacoes

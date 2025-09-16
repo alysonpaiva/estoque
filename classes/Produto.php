@@ -8,6 +8,7 @@ class Produto {
     private $id;
     private $nome;
     private $unidadeMedida;
+    private $tipoProduto;
     private $ativo;
     private $dataCadastro;
     private $db;
@@ -15,10 +16,11 @@ class Produto {
     /**
      * Construtor
      */
-    public function __construct($nome = null, $unidadeMedida = null) {
+    public function __construct($nome = null, $unidadeMedida = null, $tipoProduto = 'materia_prima') {
         $this->db = Database::getInstance();
         $this->ativo = true;
         $this->dataCadastro = new DateTime();
+        $this->tipoProduto = $tipoProduto;
         
         if ($nome !== null && $unidadeMedida !== null) {
             $this->nome = $nome;
@@ -30,6 +32,7 @@ class Produto {
     public function getId() { return $this->id; }
     public function getNome() { return $this->nome; }
     public function getUnidadeMedida() { return $this->unidadeMedida; }
+    public function getTipoProduto() { return $this->tipoProduto; }
     public function getAtivo() { return $this->ativo; }
     public function getDataCadastro() { return $this->dataCadastro; }
     
@@ -37,6 +40,7 @@ class Produto {
     public function setId($id) { $this->id = $id; }
     public function setNome($nome) { $this->nome = $nome; }
     public function setUnidadeMedida($unidadeMedida) { $this->unidadeMedida = $unidadeMedida; }
+    public function setTipoProduto($tipoProduto) { $this->tipoProduto = $tipoProduto; }
     public function setAtivo($ativo) { $this->ativo = $ativo; }
     public function setDataCadastro($dataCadastro) {
         if ($dataCadastro instanceof DateTime) {
@@ -84,6 +88,7 @@ class Produto {
                 $sql = "UPDATE produtos SET 
                         nome = :nome,
                         unidade_medida = :unidade_medida,
+                        tipo_produto = :tipo_produto,
                         ativo = :ativo
                         WHERE id = :id";
                 
@@ -91,16 +96,18 @@ class Produto {
                     ':id' => $this->id,
                     ':nome' => $this->nome,
                     ':unidade_medida' => $this->unidadeMedida,
+                    ':tipo_produto' => $this->tipoProduto,
                     ':ativo' => $this->ativo ? 1 : 0
                 ];
             } else {
                 // Inserir novo produto
-                $sql = "INSERT INTO produtos (nome, unidade_medida, ativo, data_cadastro)
-                        VALUES (:nome, :unidade_medida, :ativo, :data_cadastro)";
+                $sql = "INSERT INTO produtos (nome, unidade_medida, tipo_produto, ativo, data_cadastro)
+                        VALUES (:nome, :unidade_medida, :tipo_produto, :ativo, :data_cadastro)";
                 
                 $params = [
                     ':nome' => $this->nome,
                     ':unidade_medida' => $this->unidadeMedida,
+                    ':tipo_produto' => $this->tipoProduto,
                     ':ativo' => $this->ativo ? 1 : 0,
                     ':data_cadastro' => $this->dataCadastro->format('Y-m-d H:i:s')
                 ];
@@ -133,6 +140,7 @@ class Produto {
                 $produto->id = $result['id'];
                 $produto->nome = $result['nome'];
                 $produto->unidadeMedida = $result['unidade_medida'];
+                $produto->tipoProduto = $result['tipo_produto'] ?? 'materia_prima';
                 $produto->ativo = (bool)$result['ativo'];
                 $produto->dataCadastro = new DateTime($result['data_cadastro']);
                 
