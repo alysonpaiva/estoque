@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $loteId = (int) ($_POST['lote_id'] ?? 0);
         $quantidadeProduzida = (int) ($_POST['quantidade_produzida'] ?? 0);
         $quantidadeMateriaPrima = convertToDecimal($_POST['quantidade_materia_prima'] ?? '0');
+        $custoItensExtras = convertToDecimal($_POST['custo_itens_extras'] ?? '0');
         $observacoes = sanitizeInput($_POST['observacoes'] ?? '');
         
         if ($editando && $producao) {
@@ -42,11 +43,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $producao->setLoteId($loteId);
             $producao->setQuantidadeProduzida($quantidadeProduzida);
             $producao->setQuantidadeMateriaPrimaUsada($quantidadeMateriaPrima);
+            $producao->setCustoItensExtras($custoItensExtras);
             $producao->setObservacoes($observacoes);
             $producao->calcularCustos();
         } else {
             // Criar nova produção
             $producao = new Producao($loteId, $quantidadeProduzida, $quantidadeMateriaPrima);
+            $producao->setCustoItensExtras($custoItensExtras);
             $producao->setObservacoes($observacoes);
         }
         
@@ -227,6 +230,27 @@ $pageTitle = $editando ? 'Editar Produção' : 'Cadastrar Produção';
                                                 Número de porções que serão produzidas
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="custo_itens_extras" class="form-label">
+                                        Custo de Itens Extras
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">R$</span>
+                                        <input type="number" 
+                                               class="form-control" 
+                                               id="custo_itens_extras" 
+                                               name="custo_itens_extras"
+                                               step="0.01"
+                                               min="0"
+                                               value="<?php echo $producao ? number_format($producao->getCustoItensExtras(), 2, '.', '') : ''; ?>"
+                                               placeholder="0,00">
+                                    </div>
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle"></i>
+                                        Custo adicional de temperos, gás, embalagens, etc. (opcional)
                                     </div>
                                 </div>
 

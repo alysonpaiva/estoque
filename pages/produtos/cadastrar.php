@@ -26,11 +26,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $nome = sanitizeInput($_POST['nome'] ?? '');
         $unidadeMedida = sanitizeInput($_POST['unidade_medida'] ?? '');
+        $tipoProduto = sanitizeInput($_POST['tipo_produto'] ?? 'materia_prima');
         
         if ($editando && $produto) {
             // Atualizar produto existente
             $produto->setNome($nome);
             $produto->setUnidadeMedida($unidadeMedida);
+            $produto->setTipoProduto($tipoProduto);
             
             if (isset($_POST['ativo'])) {
                 $produto->ativar();
@@ -39,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } else {
             // Criar novo produto
-            $produto = new Produto($nome, $unidadeMedida);
+            $produto = new Produto($nome, $unidadeMedida, $tipoProduto);
         }
         
         // Validar dados
@@ -164,6 +166,32 @@ $pageTitle = $editando ? 'Editar Produto' : 'Cadastrar Produto';
                                        placeholder="Ex: bandeja, saco, etc.">
                                 <div class="form-text">
                                     Deixe em branco para usar a unidade selecionada acima
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="tipo_produto" class="form-label">
+                                    Tipo de Produto <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" id="tipo_produto" name="tipo_produto" required>
+                                    <?php
+                                    $tipos = [
+                                        'materia_prima' => 'Matéria-Prima (necessita produção)',
+                                        'produto_pronto' => 'Produto Pronto (direto para estoque)'
+                                    ];
+                                    $tipoAtual = $produto ? $produto->getTipoProduto() : 'materia_prima';
+                                    foreach ($tipos as $valor => $label) {
+                                        $selected = ($tipoAtual === $valor) ? 'selected' : '';
+                                        echo "<option value=\"$valor\" $selected>$label</option>";
+                                    }
+                                    ?>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor, selecione o tipo de produto.
+                                </div>
+                                <div class="form-text">
+                                    <strong>Matéria-Prima:</strong> Produtos que precisam ser processados (ex: farinha, açúcar)<br>
+                                    <strong>Produto Pronto:</strong> Produtos prontos para uso (ex: chocolate bisnaga, refrigerante)
                                 </div>
                             </div>
 

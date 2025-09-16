@@ -37,6 +37,14 @@ try {
         ]
     ];
     
+    // Calcular CMV (Custo da Mercadoria Vendida)
+    // CMV = Estoque Inicial + Compras - Estoque Final
+    $estoqueInicial = 0; // Para simplificar, consideramos 0 (pode ser melhorado)
+    $compras = $dashboard['valores']['total_investido'];
+    $estoqueAtual = $dashboard['valores']['total_producao'] - $dashboard['valores']['total_retiradas'];
+    $cmv = $estoqueInicial + $compras - $estoqueAtual;
+    $dashboard['valores']['cmv'] = max(0, $cmv); // CMV não pode ser negativo
+    
 } catch (Exception $e) {
     $erro = 'Erro ao carregar dashboard: ' . $e->getMessage();
     $dashboard = [
@@ -207,38 +215,47 @@ function safeFormatNumber($value, $decimals = 2) {
 
         <!-- Valores Financeiros -->
         <div class="row mb-4">
-            <div class="col-md-3">
+            <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
                 <div class="card">
                     <div class="card-body text-center">
-                        <h5 class="card-title text-primary">Total Investido</h5>
-                        <h3 class="text-primary"><?php echo safeFormatMoney($dashboard['valores']['total_investido']); ?></h3>
+                        <h6 class="card-title text-primary">Total Investido</h6>
+                        <h4 class="text-primary"><?php echo safeFormatMoney($dashboard['valores']['total_investido']); ?></h4>
                         <small class="text-muted">Em compras de lotes</small>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
                 <div class="card">
                     <div class="card-body text-center">
-                        <h5 class="card-title text-success">Custo Produção</h5>
-                        <h3 class="text-success"><?php echo safeFormatMoney($dashboard['valores']['total_producao']); ?></h3>
+                        <h6 class="card-title text-success">Custo Produção</h6>
+                        <h4 class="text-success"><?php echo safeFormatMoney($dashboard['valores']['total_producao']); ?></h4>
                         <small class="text-muted">Total produzido</small>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
                 <div class="card">
                     <div class="card-body text-center">
-                        <h5 class="card-title text-warning">Valor Retiradas</h5>
-                        <h3 class="text-warning"><?php echo safeFormatMoney($dashboard['valores']['total_retiradas']); ?></h3>
+                        <h6 class="card-title text-warning">Valor Retiradas</h6>
+                        <h4 class="text-warning"><?php echo safeFormatMoney($dashboard['valores']['total_retiradas']); ?></h4>
                         <small class="text-muted">Total retirado</small>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
                 <div class="card">
                     <div class="card-body text-center">
-                        <h5 class="card-title text-info">Estoque Atual</h5>
-                        <h3 class="text-info"><?php echo safeFormatNumber($dashboard['valores']['estoque_atual']); ?> porções</h3>
+                        <h6 class="card-title text-danger">CMV</h6>
+                        <h4 class="text-danger"><?php echo safeFormatMoney($dashboard['valores']['cmv']); ?></h4>
+                        <small class="text-muted">Custo Mercadoria Vendida</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h6 class="card-title text-info">Estoque Atual</h6>
+                        <h4 class="text-info"><?php echo safeFormatNumber($dashboard['valores']['estoque_atual']); ?> porções</h4>
                         <small class="text-muted">Porções em estoque</small>
                     </div>
                 </div>
