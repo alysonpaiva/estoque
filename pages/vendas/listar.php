@@ -83,7 +83,7 @@ $pageTitle = 'Vendas Semanais - ' . APP_NAME;
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+                        <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="../../pages/relatorios/dashboard.php">
@@ -119,22 +119,20 @@ $pageTitle = 'Vendas Semanais - ' . APP_NAME;
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-bag-check"></i> Produtos Prontos
+                            <i class="bi bi-truck"></i> Retiradas
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="../produtos_prontos/entrada.php">Nova Entrada</a></li>
-                            <li><a class="dropdown-item" href="../produtos_prontos/listar_entradas.php">Listar Entradas</a></li>
-                            <li><a class="dropdown-item" href="../produtos_prontos/retirada.php">Nova Retirada</a></li>
-                            <li><a class="dropdown-item" href="../produtos_prontos/listar_retiradas.php">Listar Retiradas</a></li>
+                            <li><a class="dropdown-item" href="../retiradas/cadastrar_unificado.php">Nova Retirada</a></li>
+                            <li><a class="dropdown-item" href="../retiradas/listar.php">Listar Retiradas</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item dropdown active">
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="bi bi-currency-dollar"></i> Vendas
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="cadastrar.php">Nova Venda</a></li>
-                            <li><a class="dropdown-item active" href="listar.php">Listar Vendas</a></li>
+                            <li><a class="dropdown-item" href="../vendas/cadastrar.php">Nova Venda</a></li>
+                            <li><a class="dropdown-item" href="../vendas/listar.php">Listar Vendas</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -147,13 +145,6 @@ $pageTitle = 'Vendas Semanais - ' . APP_NAME;
                             <li><a class="dropdown-item" href="../relatorios/producao.php">Produção</a></li>
                             <li><a class="dropdown-item" href="../relatorios/retiradas.php">Retiradas</a></li>
                         </ul>
-                    </li>
-                </ul>
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="cadastrar.php">
-                            <i class="bi bi-plus-circle"></i> Nova Venda
-                        </a>
                     </li>
                 </ul>
             </div>
