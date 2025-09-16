@@ -37,7 +37,7 @@ try {
         ]
     ];
     
-    // Calcular CMV (Custo da Mercadoria Vendida)
+    // Calcular CMV (Custo da Mercadoria Vendida) com vendas reais
     // CMV = Estoque Inicial + Compras - Estoque Final
     $estoqueInicial = 0; // Para simplificar, consideramos 0 (pode ser melhorado)
     $compras = $dashboard['valores']['total_investido'];
@@ -45,14 +45,15 @@ try {
     $cmv = $estoqueInicial + $compras - $estoqueAtual;
     $dashboard['valores']['cmv'] = max(0, $cmv); // CMV não pode ser negativo
     
-    // Calcular CMV% (percentual sobre vendas/retiradas)
-    $vendas = $dashboard['valores']['total_retiradas']; // Usando retiradas como base de vendas
-    if ($vendas > 0) {
-        $cmvPercentual = ($dashboard['valores']['cmv'] / $vendas) * 100;
+    // Calcular CMV% baseado nas vendas cadastradas
+    $totalVendas = Venda::calcularTotalVendas();
+    if ($totalVendas > 0) {
+        $cmvPercentual = ($dashboard['valores']['cmv'] / $totalVendas) * 100;
     } else {
         $cmvPercentual = 0;
     }
     $dashboard['valores']['cmv_percentual'] = $cmvPercentual;
+    $dashboard['valores']['total_vendas'] = $totalVendas;
     
 } catch (Exception $e) {
     $erro = 'Erro ao carregar dashboard: ' . $e->getMessage();

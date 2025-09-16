@@ -158,3 +158,50 @@ ALTER TABLE entradas_diretas COMMENT = 'Entradas diretas de produtos prontos';
 ALTER TABLE retiradas_diretas COMMENT = 'Retiradas diretas de produtos prontos';
 ALTER TABLE producao_itens_extras COMMENT = 'Itens extras utilizados na produção';
 
+
+-- 12. Tabela de vendas semanais
+CREATE TABLE IF NOT EXISTS vendas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    semana INT NOT NULL,
+    ano INT NOT NULL,
+    data_inicio DATE NOT NULL,
+    data_fim DATE NOT NULL,
+    valor_total DECIMAL(10,2) NOT NULL,
+    observacoes TEXT,
+    data_cadastro DATETIME NOT NULL,
+    UNIQUE KEY unique_semana_ano (semana, ano),
+    INDEX idx_periodo (data_inicio, data_fim),
+    INDEX idx_ano_semana (ano, semana)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 13. View para relatório de vendas vs custos
+CREATE OR REPLACE VIEW view_vendas_custos AS
+SELECT 
+    v.semana,
+    v.ano,
+    v.data_inicio,
+    v.data_fim,
+    v.valor_total as vendas,
+    COALESCE(SUM(r.quantidade_retirada * pr.custo_por_porcao), 0) as custo_retiradas_producao,
+    COALESCE(SUM(rd.quantidade_retirada * ed.preco_unitario), 0) as custo_retiradas_diretas,
+    (COALESCE(SUM(r.quantidade_retirada * pr.custo_por_porcao), 0) + 
+     COALESCE(SUM(rd.quantidade_retirada * ed.preco_unitario), 0)) as custo_total,
+    v.valor_total - (COALESCE(SUM(r.quantidade_retirada * pr.custo_por_porcao), 0) + 
+                     COALESCE(SUM(rd.quantidade_retirada * ed.preco_unitario), 0)) as lucro_bruto,
+    CASE 
+        WHEN v.valor_total > 0 THEN 
+            ((COALESCE(SUM(r.quantidade_retirada * pr.custo_por_porcao), 0) + 
+              COALESCE(SUM(rd.quantidade_retirada * ed.preco_unitario), 0)) / v.valor_total) * 100
+        ELSE 0 
+    END as cmv_percentual
+FROM vendas v
+LEFT JOIN retiradas r ON DATE(r.data_retirada) BETWEEN v.data_inicio AND v.data_fim
+LEFT JOIN producao pr ON r.producao_id = pr.id
+LEFT JOIN retiradas_diretas rd ON DATE(rd.data_retirada) BETWEEN v.data_inicio AND v.data_fim
+LEFT JOIN entradas_diretas ed ON rd.produto_id = ed.produto_id
+GROUP BY v.id, v.semana, v.ano, v.data_inicio, v.data_fim, v.valor_total
+ORDER BY v.ano DESC, v.semana DESC;
+
+-- Comentário na tabela vendas
+ALTER TABLE vendas COMMENT = 'Vendas semanais para cálculo de CMV e relatórios financeiros';
+
