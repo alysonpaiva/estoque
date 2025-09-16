@@ -69,6 +69,20 @@ class Database {
     }
     
     /**
+     * Executa uma query e retorna todos os resultados
+     */
+    public function fetchAll($sql, $params = []) {
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            debugLog("Erro na query fetchAll: " . $e->getMessage(), ['sql' => $sql, 'params' => $params]);
+            throw new Exception("Erro na execução da query: " . $e->getMessage());
+        }
+    }
+
+    /**
      * Retorna o último ID inserido
      */
     public function lastInsertId() {
