@@ -352,13 +352,15 @@ class Producao {
     public static function listarDisponiveis() {
         try {
             $db = Database::getInstance();
-            $sql = "SELECT pr.*, p.nome as produto_nome,
+            $sql = "SELECT pr.*, p.nome as produto_nome, l.id as lote_id,
                            (pr.quantidade_produzida - COALESCE(SUM(r.quantidade_retirada), 0)) as quantidade_disponivel
                     FROM producao pr
-                    LEFT JOIN lotes l ON pr.lote_id = l.id
-                    LEFT JOIN produtos p ON l.produto_id = p.id
+                    INNER JOIN lotes l ON pr.lote_id = l.id
+                    INNER JOIN produtos p ON l.produto_id = p.id
                     LEFT JOIN retiradas r ON pr.id = r.producao_id
-                    GROUP BY pr.id
+                    GROUP BY pr.id, pr.lote_id, pr.quantidade_produzida, pr.quantidade_materia_prima_usada, 
+                             pr.custo_total_producao, pr.custo_por_porcao, pr.data_producao, pr.observacoes, 
+                             p.nome, l.id
                     HAVING quantidade_disponivel > 0
                     ORDER BY pr.data_producao ASC"; // FIFO
             
