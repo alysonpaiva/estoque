@@ -45,6 +45,15 @@ try {
     $cmv = $estoqueInicial + $compras - $estoqueAtual;
     $dashboard['valores']['cmv'] = max(0, $cmv); // CMV não pode ser negativo
     
+    // Calcular CMV% (percentual sobre vendas/retiradas)
+    $vendas = $dashboard['valores']['total_retiradas']; // Usando retiradas como base de vendas
+    if ($vendas > 0) {
+        $cmvPercentual = ($dashboard['valores']['cmv'] / $vendas) * 100;
+    } else {
+        $cmvPercentual = 0;
+    }
+    $dashboard['valores']['cmv_percentual'] = $cmvPercentual;
+    
 } catch (Exception $e) {
     $erro = 'Erro ao carregar dashboard: ' . $e->getMessage();
     $dashboard = [
@@ -247,7 +256,9 @@ function safeFormatNumber($value, $decimals = 2) {
                     <div class="card-body text-center">
                         <h6 class="card-title text-danger">CMV</h6>
                         <h4 class="text-danger"><?php echo safeFormatMoney($dashboard['valores']['cmv']); ?></h4>
-                        <small class="text-muted">Custo Mercadoria Vendida</small>
+                        <small class="text-muted">
+                            <?php echo number_format($dashboard['valores']['cmv_percentual'], 1, ',', '.'); ?>% das vendas
+                        </small>
                     </div>
                 </div>
             </div>
